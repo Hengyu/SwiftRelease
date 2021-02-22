@@ -57,12 +57,24 @@ public struct TypedRelease: Codable, Equatable, Hashable {
     public let platform: SupportedPlatform
     /// The type of the release.
     public let type: ReleaseType
+    /// The URL pointed to the webpage for the release, could be an App Store page.
+    public let url: URL?
 
+    /// Keep this method to not introduce breaking changes.
     public static func production(version: Version, platform: SupportedPlatform) -> TypedRelease {
-        .init(version: version, platform: platform, type: .production)
+        .init(version: version, platform: platform, type: .production, url: nil)
     }
 
+    /// Keep this method to not introduce breaking changes.
     public static func beta(version: Version, platform: SupportedPlatform) -> TypedRelease {
-        .init(version: version, platform: platform, type: .beta)
+        .init(version: version, platform: platform, type: .beta, url: nil)
+    }
+
+    public static func production(version: Version, platform: SupportedPlatform, url: URL?) -> TypedRelease {
+        .init(version: version, platform: platform, type: .production, url: url)
+    }
+
+    public static func beta(version: Version, platform: SupportedPlatform, url: URL?) -> TypedRelease {
+        .init(version: version, platform: platform, type: .beta, url: url)
     }
 }
