@@ -197,3 +197,4 @@ extension Version: Codable {
 }
 
 extension Version: Hashable { }
+extension Version: Sendable { }

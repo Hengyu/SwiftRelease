@@ -8,7 +8,7 @@
 import Foundation
 
 /// `Release` value contains necessary info of a certain binary release.
-public struct Release: Codable, Equatable, Hashable {
+public struct Release: Codable, Equatable, Hashable, Sendable {
     /// The version info of the release.
     public let version: Version
     /// The target platform of the release.
@@ -44,13 +44,13 @@ public struct Release: Codable, Equatable, Hashable {
     }
 }
 
-public enum ReleaseType: String, Codable, Hashable {
+public enum ReleaseType: String, Codable, Hashable, Sendable {
     case production
     case beta
 }
 
 /// `TypedRelease` does not have the `next` release.
-public struct TypedRelease: Codable, Equatable, Hashable {
+public struct TypedRelease: Codable, Equatable, Hashable, Sendable {
     /// The version info of the release.
     public let version: Version
     /// The target platform of the release.

@@ -115,3 +115,6 @@ extension PlatformVersion: ExpressibleByStringLiteral {
 }
 
 extension SupportedPlatform: Hashable { }
+extension SupportedPlatform: Sendable { }
+extension Platform: Sendable { }
+extension PlatformVersion: Sendable { }
