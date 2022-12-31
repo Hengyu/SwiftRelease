@@ -25,14 +25,21 @@ public struct Platform: Equatable, Hashable, Codable {
         self.oldestSupportedVersion = oldestSupportedVersion
     }
 
-    public static let macOS: Platform = Platform(name: "macos", oldestSupportedVersion: "10.10")
-    public static let iOS: Platform = Platform(name: "ios", oldestSupportedVersion: "9.0")
-    public static let tvOS: Platform = Platform(name: "tvos", oldestSupportedVersion: "9.0")
-    public static let watchOS: Platform = Platform(name: "watchos", oldestSupportedVersion: "2.0")
+    public static func custom(name: String, oldestSupportedVersion: String) -> Platform {
+        Platform(name: name, oldestSupportedVersion: PlatformVersion(oldestSupportedVersion))
+    }
+
+    public static let macOS: Platform = Platform(name: "macos", oldestSupportedVersion: "10.13")
+    public static let macCatalyst: Platform = Platform(name: "maccatalyst", oldestSupportedVersion: "13.0")
+    public static let iOS: Platform = Platform(name: "ios", oldestSupportedVersion: "11.0")
+    public static let tvOS: Platform = Platform(name: "tvos", oldestSupportedVersion: "11.0")
+    public static let watchOS: Platform = Platform(name: "watchos", oldestSupportedVersion: "4.0")
+    public static let driverKit: Platform = Platform(name: "driverkit", oldestSupportedVersion: "19.0")
     public static let linux: Platform = Platform(name: "linux", oldestSupportedVersion: .unknown)
     public static let android: Platform = Platform(name: "android", oldestSupportedVersion: .unknown)
     public static let windows: Platform = Platform(name: "windows", oldestSupportedVersion: .unknown)
     public static let wasi: Platform = Platform(name: "wasi", oldestSupportedVersion: .unknown)
+    public static let openbsd: Platform = Platform(name: "openbsd", oldestSupportedVersion: .unknown)
 
 }
 
