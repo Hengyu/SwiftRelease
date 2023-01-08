@@ -8,6 +8,8 @@
 // See http://swift.org/LICENSE.txt for license information
 // See http://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 //
+// Modified by hengyu (c) 2021-2023
+//
 // ===----------------------------------------------------------------------===//
 
 /// A version according to the semantic versioning specification.
@@ -185,8 +187,21 @@ extension Version: Codable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        let description = try container.decode(String.self)
-        if let version = Version(description) {
+        if let description = try? container.decode(String.self) {
+            self = try .init(compatible: description)
+        } else if let number = try? container.decode(Double.self) {
+            self = try .init(compatible: String(number))
+        } else {
+            throw DecodingError.dataCorrupted(
+                .init(codingPath: [DebugCodingKey.version], debugDescription: "Cannot decode version")
+            )
+        }
+    }
+
+    private init(compatible: String) throws {
+        if let version = Version(compatible) {
+            self = version
+        } else if let version = Version(unsafe: compatible) {
             self = version
         } else {
             throw DecodingError.dataCorrupted(

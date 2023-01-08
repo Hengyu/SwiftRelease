@@ -8,6 +8,8 @@
 // See http://swift.org/LICENSE.txt for license information
 // See http://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 //
+// Modified by hengyu (c) 2021-2023
+//
 // ===----------------------------------------------------------------------===//
 
 extension Version: ExpressibleByStringLiteral {
@@ -44,7 +46,7 @@ extension Version: ExpressibleByStringLiteral {
 
 extension Version: LosslessStringConvertible {
     /// Initializes a version struct with the provided version string.
-    /// - Parameter version: A version string to use for creating a new version struct.
+    /// - Parameter versionString: A version string to use for creating a new version struct.
     public init?(_ versionString: String) {
         // SemVer 2.0.0 allows only ASCII alphanumerical characters and "-" in the version string, except for "." and "+" as delimiters. ("-" is used as a delimiter between the version core and pre-release identifiers, but it's allowed within pre-release and metadata identifiers as well.)
         // Alphanumerics check will come later, after each identifier is split out (i.e. after the delimiters are removed).
@@ -87,5 +89,47 @@ extension Version: LosslessStringConvertible {
         } else {
             self.buildMetadataIdentifiers = []
         }
+    }
+
+    public init?(unsafe versionString: String) {
+        let prereleaseStartIndex = versionString.firstIndex(of: "-")
+        let metadataStartIndex = versionString.firstIndex(of: "+")
+
+        let requiredEndIndex = prereleaseStartIndex ?? metadataStartIndex ?? versionString.endIndex
+        let requiredCharacters = versionString.prefix(upTo: requiredEndIndex)
+        let requiredComponents = requiredCharacters
+            .split(separator: ".", maxSplits: 2, omittingEmptySubsequences: false)
+            .map(String.init)
+            .compactMap({ Int($0) })
+            .filter({ $0 >= 0 })
+
+        switch requiredComponents.count {
+        case 3:
+            self.major = requiredComponents[0]
+            self.minor = requiredComponents[1]
+            self.patch = requiredComponents[2]
+        case 2:
+            self.major = requiredComponents[0]
+            self.minor = requiredComponents[1]
+            self.patch = 0
+        case 1:
+            self.major = requiredComponents[0]
+            self.minor = 0
+            self.patch = 0
+        default:
+            return nil
+        }
+
+        func identifiers(start: String.Index?, end: String.Index) -> [String] {
+            guard let start = start else { return [] }
+            let identifiers = versionString[versionString.index(after: start)..<end]
+            return identifiers.split(separator: ".").map(String.init)
+        }
+
+        self.prereleaseIdentifiers = identifiers(
+            start: prereleaseStartIndex,
+            end: metadataStartIndex ?? versionString.endIndex
+        )
+        self.buildMetadataIdentifiers = identifiers(start: metadataStartIndex, end: versionString.endIndex)
     }
 }
