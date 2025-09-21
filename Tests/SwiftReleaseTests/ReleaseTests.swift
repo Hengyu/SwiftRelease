@@ -11,8 +11,4 @@ final class ReleaseTests: XCTestCase {
         )
         XCTAssertTrue(release.isLatestProduction)
     }
-
-    static var allTests = [
-        ("testLatestRelease", testLatestRelease)
-    ]
 }
